@@ -18,11 +18,20 @@ export function assertCloudinaryConfigured() {
 
 export async function uploadImageToCloudinary(
   buffer: Buffer,
-  filename: string
-): Promise<{ url: string; publicId: string }> {
+  filename: string,
+  options?: { generateBannerVariants?: boolean }
+): Promise<{
+  url: string;
+  publicId: string;
+  variants?: { mobile: string; tablet: string; desktop: string };
+}> {
   assertCloudinaryConfigured();
 
-  const result = await new Promise<{ secure_url: string; public_id: string }>(
+  const result = await new Promise<{
+    secure_url: string;
+    public_id: string;
+    eager?: Array<{ secure_url: string }>;
+  }>(
     (resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
@@ -31,6 +40,15 @@ export async function uploadImageToCloudinary(
             public_id: filename.replace(/\.[^.]+$/, ""),
             resource_type: "image",
             overwrite: false,
+            ...(options?.generateBannerVariants
+              ? {
+                  eager: [
+                    { width: 480, crop: "scale", quality: "auto", fetch_format: "auto" },
+                    { width: 1024, crop: "scale", quality: "auto", fetch_format: "auto" },
+                    { width: 1600, crop: "scale", quality: "auto", fetch_format: "auto" },
+                  ],
+                }
+              : {}),
           },
           (error, uploadResult) => {
             if (error || !uploadResult) {
@@ -40,6 +58,9 @@ export async function uploadImageToCloudinary(
             resolve({
               secure_url: uploadResult.secure_url,
               public_id: uploadResult.public_id,
+              eager: uploadResult.eager?.map((variant: { secure_url: string }) => ({
+                secure_url: variant.secure_url,
+              })),
             });
           }
         )
@@ -50,6 +71,15 @@ export async function uploadImageToCloudinary(
   return {
     url: result.secure_url,
     publicId: result.public_id,
+    ...(result.eager?.length === 3
+      ? {
+          variants: {
+            mobile: result.eager[0].secure_url,
+            tablet: result.eager[1].secure_url,
+            desktop: result.eager[2].secure_url,
+          },
+        }
+      : {}),
   };
 }
 

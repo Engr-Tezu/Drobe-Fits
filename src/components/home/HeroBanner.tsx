@@ -6,32 +6,36 @@ import { SiteSettings } from "@/types/site";
 const FALLBACK_BANNER = "/banner.jpeg";
 
 /**
- * The bundled banner artwork is 1600x777 with its wordmark baked into the left
- * half. Rather than letterboxing it down to an unreadable strip on phones, the
- * crop tightens as the viewport narrows (object-left keeps the wordmark in
- * frame), and the full, uncropped artwork is shown from `lg` up where there is
- * room. The CTAs live in the band below so they never sit over the artwork.
+ * The banner uses three proportional sizes so the complete uploaded artwork is
+ * always visible. The browser chooses a smaller file on phones without using
+ * object-cover, which would crop the artwork.
  *
  * The image itself is admin-managed via Settings → Hero → Main Banner Image;
  * a replacement of a different shape still fills the frame via object-cover.
  */
 export default function HeroBanner({ settings }: { settings: SiteSettings }) {
   const bannerSrc = settings.heroBannerUrl?.trim() || FALLBACK_BANNER;
+  const mobileSrc = settings.heroBannerMobileUrl?.trim() || bannerSrc;
+  const tabletSrc = settings.heroBannerTabletUrl?.trim() || bannerSrc;
+  const desktopSrc = settings.heroBannerDesktopUrl?.trim() || bannerSrc;
 
   return (
     <section className="bg-am-dark">
       <div className="relative mx-auto w-full max-w-[1600px]">
-        <div className="relative aspect-[5/4] w-full xs:aspect-[3/2] sm:aspect-[2/1] lg:aspect-[1600/777]">
+        <picture className="block">
+          <source media="(min-width: 1024px)" srcSet={desktopSrc} />
+          <source media="(min-width: 640px)" srcSet={tabletSrc} />
           <Image
-            src={bannerSrc}
+            src={mobileSrc}
             alt={`${settings.siteName} — ${settings.heroBadge}`}
-            fill
+            width={1600}
+            height={777}
             priority
             quality={90}
             sizes="100vw"
-            className="object-cover object-left lg:object-center"
+            className="block h-auto w-full"
           />
-        </div>
+        </picture>
       </div>
 
       <HeroHeadline settings={settings} />

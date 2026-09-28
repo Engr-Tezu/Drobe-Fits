@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
+    const fieldKey = String(formData.get("fieldKey") || "");
 
     if (!file) {
       return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 });
@@ -38,9 +39,14 @@ export async function POST(request: NextRequest) {
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-    const { url } = await uploadImageToCloudinary(buffer, filename);
+    const result = await uploadImageToCloudinary(buffer, filename, {
+      generateBannerVariants: fieldKey === "heroBannerUrl",
+    });
 
-    return NextResponse.json({ success: true, data: { url } });
+    return NextResponse.json({
+      success: true,
+      data: { url: result.url, variants: result.variants },
+    });
   } catch (error) {
     console.error("POST /api/upload error:", error);
     const message =

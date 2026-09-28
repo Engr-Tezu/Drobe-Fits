@@ -114,7 +114,7 @@ export default function Carousel({
         ref={trackRef}
         role="region"
         aria-label={ariaLabel}
-        className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-hide sm:-mx-6 sm:gap-5 sm:px-6 lg:mx-0 lg:px-0"
+        className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-8 pb-2 scrollbar-hide sm:-mx-6 sm:gap-5 sm:px-6 lg:mx-0 lg:px-0"
       >
         {children.map((child, index) => (
           <div key={index} className={`shrink-0 snap-start ${slideClassName}`}>

@@ -262,6 +262,16 @@ export default function AdminSettingsForm({
     setSettings((prev) => ({ ...prev, [name]: value }));
   };
 
+  const updateBannerUrl = (value: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      heroBannerUrl: value,
+      heroBannerMobileUrl: "",
+      heroBannerTabletUrl: "",
+      heroBannerDesktopUrl: "",
+    }));
+  };
+
   const filteredGroups = useMemo(() => {
     const query = search.trim().toLowerCase();
     return SETTINGS_GROUPS.map((group) => {
@@ -328,10 +338,21 @@ export default function AdminSettingsForm({
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("fieldKey", String(fieldKey));
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Logo upload failed");
-      update(fieldKey, data.data.url);
+      if (fieldKey === "heroBannerUrl" && data.data.variants) {
+        setSettings((previous) => ({
+          ...previous,
+          heroBannerUrl: data.data.url,
+          heroBannerMobileUrl: data.data.variants.mobile || "",
+          heroBannerTabletUrl: data.data.variants.tablet || "",
+          heroBannerDesktopUrl: data.data.variants.desktop || "",
+        }));
+      } else {
+        update(fieldKey, data.data.url);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Logo upload failed");
     } finally {
@@ -563,7 +584,11 @@ export default function AdminSettingsForm({
                         <div className="flex-1 space-y-2">
                           <input
                             value={value}
-                            onChange={(e) => update(field.key, e.target.value)}
+                            onChange={(e) =>
+                              field.key === "heroBannerUrl"
+                                ? updateBannerUrl(e.target.value)
+                                : update(field.key, e.target.value)
+                            }
                             className={inputClass}
                             placeholder={field.placeholder || "/image.png or full image URL"}
                           />

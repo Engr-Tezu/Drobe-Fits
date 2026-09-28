@@ -27,8 +27,6 @@ export default function FeaturedCarousel({
   return (
     <Carousel
       ariaLabel={ariaLabel}
-      autoPlay
-      autoPlayInterval={4000}
       slideClassName="w-[78%] sm:w-[46%] md:w-[31%] lg:w-[23.5%]"
     >
       {products.map((product, index) => (

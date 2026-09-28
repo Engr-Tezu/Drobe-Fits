@@ -29,6 +29,9 @@ export interface ISiteSettings extends Document {
   heroRotatingWords: string[];
   heroDescription: string;
   heroBannerUrl: string;
+  heroBannerMobileUrl: string;
+  heroBannerTabletUrl: string;
+  heroBannerDesktopUrl: string;
   announcementMessages: string[];
   collectionTitle: string;
   collectionSubtitle: string;
@@ -129,6 +132,9 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     heroRotatingWords: { type: [String], default: [] },
     heroDescription: { type: String, default: "" },
     heroBannerUrl: { type: String, default: "" },
+    heroBannerMobileUrl: { type: String, default: "" },
+    heroBannerTabletUrl: { type: String, default: "" },
+    heroBannerDesktopUrl: { type: String, default: "" },
     announcementMessages: { type: [String], default: [] },
     collectionTitle: { type: String, default: "" },
     collectionSubtitle: { type: String, default: "" },

@@ -64,6 +64,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   heroDescription:
     "Discover curated premium products that define quality, confidence, and everyday elegance.",
   heroBannerUrl: "/banner.jpeg",
+  heroBannerMobileUrl: "",
+  heroBannerTabletUrl: "",
+  heroBannerDesktopUrl: "",
   announcementMessages: [],
   collectionTitle: "Featured Collection",
   collectionSubtitle: "Handpicked products chosen for style, quality, and value.",
@@ -159,6 +162,9 @@ export const SETTINGS_STRING_KEYS = (
 /** Field names that are plain strings falling back to DEFAULT_SITE_SETTINGS. */
 const SIMPLE_TEXT_KEYS = [
   "heroBannerUrl",
+  "heroBannerMobileUrl",
+  "heroBannerTabletUrl",
+  "heroBannerDesktopUrl",
   "navHomeLabel",
   "navCollectionLabel",
   "navAboutLabel",

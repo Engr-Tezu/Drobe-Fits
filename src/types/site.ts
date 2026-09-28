@@ -31,6 +31,10 @@ export interface SiteSettings {
   heroDescription: string;
   /** Wide artwork at the top of the homepage. */
   heroBannerUrl: string;
+  /** Responsive crops generated from the main banner upload. */
+  heroBannerMobileUrl: string;
+  heroBannerTabletUrl: string;
+  heroBannerDesktopUrl: string;
   /** Scrolling strip above the navbar. Empty falls back to contact details. */
   announcementMessages: string[];
   collectionTitle: string;
